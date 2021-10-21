@@ -3,7 +3,7 @@
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/trinityrank/geo-location.svg?style=flat-square)](https://packagist.org/packages/trinityrank/geo-location)
 [![Total Downloads](https://img.shields.io/packagist/dt/trinityrank/geo-location.svg?style=flat-square)](https://packagist.org/packages/trinityrank/geo-location)
 
-Adds URL formatting and redirection with trailing slash to Laravel framework.
+Choose to show or hide Operaters by choosing the countries from list.
 
 ## Installation
 
@@ -77,7 +77,7 @@ Add this in tenant config
                 'visible' => true
             ]
         ]
-        
+
         ...
     ]
 ```

@@ -49,7 +49,7 @@ Add this fields to '$fillable' inside Operaters model
 
 ### Step 4: Add field
 
-Add field to your (Operater) resource into "fields" method
+- Add field to your (Operater) resource into "fields" method
 
 ```shell
     use Trinityrank\GeoLocation\GeoLocationPanel;
@@ -57,4 +57,27 @@ Add field to your (Operater) resource into "fields" method
     ...
     
     GeoLocationPanel::make()
+```
+
+- Or if you use conditional fields than just add this into "fields" method
+```shell
+    $this->getGeoLocationPanel('GeoLocation Page Settings', 'geolocation')
+```
+
+### Step 5: If you are using conditional fields
+
+Add this in tenant config
+
+```shell
+    'conditional_fields' => [
+        ...
+
+        'operater' => [
+            'geolocation' => [
+                'visible' => true
+            ]
+        ]
+        
+        ...
+    ]
 ```

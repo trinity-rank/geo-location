@@ -9,8 +9,14 @@ use OwenMelbz\RadioField\RadioButton;
 class GeoLocationPanel
 {
 
-    public static function make($panelTitle = 'GeoLocation Page settings')
+    public static function make($panelTitle = 'GeoLocation Page Settings', $columnName = null, $targets = null, $options = null)
     {
+        // Because we have conditional fields
+        if( isset($options['visibility']) && $options['visibility'] == false )
+        {
+            return new Panel($panelTitle, []);
+        }
+
         return new Panel($panelTitle, [
             RadioButton::make('Choose:', 'geolocation_option')
                 ->options([

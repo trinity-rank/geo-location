@@ -81,3 +81,13 @@ Add this in tenant config
         ...
     ]
 ```
+
+### Step 6: Frontend part
+
+```shell
+    use Trinityrank\GeoLocation\GeoLocationOperater;
+
+    ...
+
+    $operaters = GeoLocationOperater::list($operaters);
+```

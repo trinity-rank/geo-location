@@ -20,7 +20,8 @@ class GeoLocationOperater
         */
 
         curl_setopt_array($curl, array(
-            CURLOPT_URL => 'https://geo-location.test/api/location',
+            // CURLOPT_URL => 'https://geo-location.test/api/location', // local valet project
+            CURLOPT_URL => 'http://143.198.178.43/api/location',
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => '',
             CURLOPT_MAXREDIRS => 10,

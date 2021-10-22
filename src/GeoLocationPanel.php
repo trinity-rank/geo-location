@@ -5,6 +5,8 @@ namespace Trinityrank\GeoLocation;
 use Laravel\Nova\Panel;
 use OptimistDigital\MultiselectField\Multiselect;
 use OwenMelbz\RadioField\RadioButton;
+use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Fields\Badge;
 
 class GeoLocationPanel
 {
@@ -18,20 +20,37 @@ class GeoLocationPanel
         }
 
         return new Panel($panelTitle, [
+            // Only on forms fields
             RadioButton::make('Choose:', 'geolocation_option')
                 ->options([
                     1 => 'Show in',
                     2 => 'Never show in',
                 ])
+                ->default(0)
                 ->stack()
-                ->marginBetween(),
+                ->marginBetween()
+                ->onlyOnForms(),
 
-            self::field('Select Countries', 'geolocation_countries'),
+            self::multiselect('Select Countries', 'geolocation_countries'),
+
+            // Except on form fields
+            RadioButton::make('Geolocation Option:', 'geolocation_option')
+            ->options([
+                0 => '',
+                1 => 'Show in countries',
+                2 => 'Hide in countries',
+            ])
+            ->exceptOnForms(),
+
+            Text::make('Countries', function ($locations) {
+                return join(", ", json_decode($locations->geolocation_countries));
+            })->exceptOnForms(),
         ]);
+
     }
     
 
-    public static function field($title, $field_name)
+    public static function multiselect($title, $field_name)
     {
         return Multiselect::make($title, $field_name)
             ->options([
@@ -275,6 +294,6 @@ class GeoLocationPanel
                 "ZM" => "Zambia",
                 "ZW" => "Zimbabwe",
             ])
-            ->saveAsJSON();
+            ->onlyOnForms();
     }
 }

@@ -7,7 +7,7 @@ use App\Models\Operater;
 
 class GeoLocationOperater
 {
-    public static function api_call()
+    public static function api_call($api_token)
     {
         $curl = curl_init();
         $user_ip = Request::ip();
@@ -20,8 +20,8 @@ class GeoLocationOperater
         */
 
         curl_setopt_array($curl, array(
-            // CURLOPT_URL => 'https://geo-location.test/api/location', // local valet project
-            CURLOPT_URL => 'http://143.198.178.43/api/location',
+            CURLOPT_URL => 'https://geo-location.test/api/location', // localhost project
+            // CURLOPT_URL => 'http://143.198.178.43/api/location',
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => '',
             CURLOPT_MAXREDIRS => 10,
@@ -33,7 +33,7 @@ class GeoLocationOperater
                 "ip": "'. $user_ip .'"
             }',
             CURLOPT_HTTPHEADER => array(
-                'Authorization: Bearer rzHeHOnuKaTc8sE8DxYgoL6YfzZlT3gqHb2c4d6dG0zjhRdLMtq5JNos2lRTiaUqFiJrGlLoXW6vO2cq',
+                'Authorization: Bearer '. $api_token,
                 'Content-Type: application/json'
             ),
         ));
@@ -45,13 +45,13 @@ class GeoLocationOperater
     }
 
 
-    public static function list($decorator)
+    public static function list($api_token, $decorator)
     {
         // List of operaters ID
         $tableElements = json_decode($decorator);
         
         // Get information according to user IP
-        $geolocation = self::api_call();
+        $geolocation = self::api_call($api_token);
         
         // If no results from API then return all
         if( !isset(json_decode($geolocation)->country_code) ) {

@@ -84,10 +84,24 @@ Add this in tenant config
 
 ### Step 6: Frontend part
 
+Add new variable in .ENV file
+
+```shell
+    GEOLOCATION_API_TOKEN=[--Replace-this-with-website-token--]
+```
+
+You can connect with 'config/main.php' file
+
+```shell
+    'geolocation_api_token' => env('GEOLOCATION_API_TOKEN', null),
+```
+
+Then we can use our Geo Location
+
 ```shell
     use Trinityrank\GeoLocation\GeoLocationOperater;
 
     ...
 
-    $operaters = GeoLocationOperater::list($operaters);
+    $operaters = GeoLocationOperater::list($api_token, $operaters_array);
 ```

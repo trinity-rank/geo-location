@@ -10,11 +10,11 @@ class GeoLocationOperater
     public static function api_call()
     {
         $curl = curl_init();
-
-        // "ip": '. Request::ip() .'
+        $user_ip = Request::ip();
 
         /*
-        uk - 185.44.76.168      213.166.86.115
+        Test IP addresses
+        uk - 185.44.76.168
         it - 185.217.71.4
         fr - 143.244.57.123
         */
@@ -29,7 +29,7 @@ class GeoLocationOperater
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => 'GET',
             CURLOPT_POSTFIELDS =>'{
-                "ip": "185.44.76.168"
+                "ip": "'. $user_ip .'"
             }',
             CURLOPT_HTTPHEADER => array(
                 'Authorization: Bearer rzHeHOnuKaTc8sE8DxYgoL6YfzZlT3gqHb2c4d6dG0zjhRdLMtq5JNos2lRTiaUqFiJrGlLoXW6vO2cq',

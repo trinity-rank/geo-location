@@ -84,6 +84,18 @@ Add this in tenant config
 
 ### Step 6: Frontend part
 
+- Without token
+
+```shell
+    use Trinityrank\GeoLocation\GeoLocationOperater;
+
+    ...
+
+    $operaters = GeoLocationOperater::list($operaters_array);
+```
+
+- With token
+
 Add new variable in .ENV file
 
 ```shell
@@ -103,5 +115,5 @@ Then we can use our Geo Location
 
     ...
 
-    $operaters = GeoLocationOperater::list($api_token, $operaters_array);
+    $operaters = GeoLocationOperater::list($operaters_array, $api_token);
 ```

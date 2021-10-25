@@ -7,7 +7,8 @@ use App\Models\Operater;
 
 class GeoLocationOperater
 {
-    public static function api_call($api_token)
+    // This is default admin token
+    public static function api_call($api_token = "d1FfPSYIUxQIuPcQa6k3UJ8LvCnDVkLSYvAaPsSKTb44A6smrn2hz77kE7H85g8PhzmvHYpTAlZ0vxGw")
     {
         $curl = curl_init();
         $user_ip = Request::ip();
@@ -45,7 +46,7 @@ class GeoLocationOperater
     }
 
 
-    public static function list($api_token, $decorator)
+    public static function list($decorator, $api_token)
     {
         // List of operaters ID
         $tableElements = json_decode($decorator);

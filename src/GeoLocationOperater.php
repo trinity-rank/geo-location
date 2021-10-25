@@ -46,10 +46,10 @@ class GeoLocationOperater
     }
 
 
-    public static function list($decorator, $api_token)
+    public static function list($decorators, $api_token)
     {
         // List of operaters ID
-        $tableElements = json_decode($decorator);
+        $tableElements = json_decode($decorators);
         
         // Get information according to user IP
         $geolocation = self::api_call($api_token);

@@ -115,5 +115,5 @@ Then we can use our Geo Location
 
     ...
 
-    $operaters = GeoLocationOperater::list($operaters_array, $api_token);
+    $operaters = GeoLocationOperater::list($operaters_array, $api_token = [optional]);
 ```

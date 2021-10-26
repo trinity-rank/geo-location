@@ -43,7 +43,7 @@ class GeoLocationPanel
             ->exceptOnForms(),
 
             Text::make('Countries', function ($locations) {
-                return join(", ", json_decode($locations->geolocation_countries));
+                return ($locations->geolocation_countries) ? join(", ", json_decode($locations->geolocation_countries)) : "";
             })->exceptOnForms(),
         ]);
 

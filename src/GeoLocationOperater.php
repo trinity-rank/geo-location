@@ -44,21 +44,32 @@ class GeoLocationOperater
         ));
         
         $response = curl_exec($curl);
-    
         curl_close($curl);
 
-        echo $api_token;
-        die;
         return $response;
     }
 
 
     public static function list($decorators, $api_token = null)
     {
-        
-
         // List of operaters ID
         $tableElements = json_decode($decorators);
+
+        // START check do we need to use geolocation API
+        $operaters_geolocation_settings = false;
+
+        foreach($tableElements as $index => $element)
+        {
+            $operater = Operater::whereId($element)->get();
+            if( !empty(json_decode($operater[0]['geolocation_countries'])) ) {
+                $operaters_geolocation_settings = true;
+            }
+        }
+
+        if($operaters_geolocation_settings == false) {
+            return $tableElements;
+        }
+        // END check
         
         // Get information according to user IP
         $geolocation = self::api_call($api_token);
@@ -71,11 +82,10 @@ class GeoLocationOperater
         // Get country code from API
         $country_code = json_decode($geolocation)->country_code;
 
-        
         // Geo location show or hide some operater
         foreach($tableElements as $index => $element)
         {
-            $operater = Operater::whereId($element)->with('media')->get();
+            $operater = Operater::whereId($element)->get();
             $geolocation_option = json_decode($operater[0]['geolocation_option']);
             $geolocation_countries = json_decode($operater[0]['geolocation_countries']);
 

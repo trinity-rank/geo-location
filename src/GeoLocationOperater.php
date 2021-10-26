@@ -46,7 +46,7 @@ class GeoLocationOperater
     }
 
 
-    public static function list($decorators, $api_token)
+    public static function list($decorators, $api_token = "")
     {
         // List of operaters ID
         $tableElements = json_decode($decorators);

@@ -50,15 +50,15 @@ class GeoLocationOperater
     }
 
 
-    public static function list($decorators, $api_token = null)
+    public static function list($operaters_id, $api_token = null)
     {
         // List of operaters ID
-        $tableElements = json_decode($decorators);
+        // $operaters_id = json_decode($operaters_id);
 
         // START check do we need to use geolocation API
         $operaters_geolocation_settings = false;
 
-        foreach($tableElements as $index => $element)
+        foreach($operaters_id as $index => $element)
         {
             $operater = Operater::whereId($element)->get();
             if( !empty(json_decode($operater[0]['geolocation_countries'])) ) {
@@ -67,7 +67,7 @@ class GeoLocationOperater
         }
 
         if($operaters_geolocation_settings == false) {
-            return $tableElements;
+            return $operaters_id;
         }
         // END check
         
@@ -76,14 +76,14 @@ class GeoLocationOperater
         
         // If no results from API then return all
         if( !isset(json_decode($geolocation)->country_code) ) {
-            return $tableElements;
+            return $operaters_id;
         }
 
         // Get country code from API
         $country_code = json_decode($geolocation)->country_code;
 
         // Geo location show or hide some operater
-        foreach($tableElements as $index => $element)
+        foreach($operaters_id as $index => $element)
         {
             $operater = Operater::whereId($element)->get();
             $geolocation_option = json_decode($operater[0]['geolocation_option']);
@@ -92,18 +92,18 @@ class GeoLocationOperater
             // 1 = Show in
             if( $geolocation_option == 1 && !in_array($country_code, $geolocation_countries ) )
             {
-                unset( $tableElements[$index] );
+                unset( $operaters_id[$index] );
             }
             
             // 2 = Never show in
             if( $geolocation_option == 2 && in_array($country_code, $geolocation_countries) )
             {
-                unset( $tableElements[$index] );
+                unset( $operaters_id[$index] );
             }
 
         }
 
-        return $tableElements;
+        return $operaters_id;
     }
 
 }

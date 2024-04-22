@@ -4,53 +4,34 @@ namespace Trinityrank\GeoLocation;
 
 use \Request;
 use App\Models\Operater;
+use Illuminate\Support\Facades\Http;
 
 class GeoLocationOperater
 {
     /*
+    API: https://ip-api.com/
+    Usage: http://ip-api.com/json/24.48.0.1
+    For more options see: https://ip-api.com/docs/api:json
+    -----------------
     Test IP addresses
     uk - 185.44.76.168
     it - 185.217.71.4
     fr - 143.244.57.123
     */
 
-
-    // This is default admin token
-    public static function api_call($api_token)
+    public static function api_call()
     {
+        /**
+         * @return object
+         */
         // User IP address
-        $user_ip = Request::ip();
-        // Default "admin" api token
-        $api_token = $api_token ?? "d1FfPSYIUxQIuPcQa6k3UJ8LvCnDVkLSYvAaPsSKTb44A6smrn2hz77kE7H85g8PhzmvHYpTAlZ0vxGw";
-
-        $curl = curl_init();
-        curl_setopt_array($curl, array(
-            // CURLOPT_URL => 'https://geo-location.test/api/location', // localhost project
-            CURLOPT_URL => 'http://143.198.178.43/api/location',
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'GET',
-            CURLOPT_POSTFIELDS =>'{
-                "ip": "'. $user_ip .'"
-            }',
-            CURLOPT_HTTPHEADER => array(
-                'Authorization: Bearer '. $api_token,
-                'Content-Type: application/json'
-            ),
-        ));
-        
-        $response = curl_exec($curl);
-        curl_close($curl);
-
-        return $response;
+        $user_ip = Request::ip() ?? '184.169.250.146';
+        // $user_ip = '185.217.71.4';
+        return Http::get("http://ip-api.com/json/" . $user_ip . "?fields=status,countryCode");
     }
 
 
-    public static function list($operaters_id, $api_token = null)
+    public static function list($operaters_id)
     {
         // List of operaters ID
         // $operaters_id = json_decode($operaters_id);
@@ -58,52 +39,46 @@ class GeoLocationOperater
         // START check do we need to use geolocation API
         $operaters_geolocation_settings = false;
 
-        foreach($operaters_id as $index => $element)
-        {
+        foreach ($operaters_id as $index => $element) {
             $operater = Operater::whereId($element)->get();
-            if( !empty(json_decode($operater[0]['geolocation_countries'])) ) {
+            if (!empty(json_decode($operater[0]['geolocation_countries']))) {
                 $operaters_geolocation_settings = true;
             }
         }
 
-        if($operaters_geolocation_settings == false) {
+        if ($operaters_geolocation_settings == false) {
             return $operaters_id;
         }
         // END check
-        
+
         // Get information according to user IP
-        $geolocation = self::api_call($api_token);
-        
+        $geolocation = self::api_call();
         // If no results from API then return all
-        if( !isset(json_decode($geolocation)->country_code) ) {
+
+        if (!isset(json_decode($geolocation)->countryCode)) {
             return $operaters_id;
         }
 
         // Get country code from API
-        $country_code = json_decode($geolocation)->country_code;
+        $country_code = json_decode($geolocation)->countryCode;
 
         // Geo location show or hide some operater
-        foreach($operaters_id as $index => $element)
-        {
+        foreach ($operaters_id as $index => $element) {
             $operater = Operater::whereId($element)->get();
             $geolocation_option = json_decode($operater[0]['geolocation_option']);
             $geolocation_countries = json_decode($operater[0]['geolocation_countries']);
 
             // 1 = Show in
-            if( $geolocation_option == 1 && !in_array($country_code, $geolocation_countries ) )
-            {
-                unset( $operaters_id[$index] );
-            }
-            
-            // 2 = Never show in
-            if( $geolocation_option == 2 && in_array($country_code, $geolocation_countries) )
-            {
-                unset( $operaters_id[$index] );
+            if ($geolocation_option == 1 && !in_array($country_code, $geolocation_countries)) {
+                unset($operaters_id[$index]);
             }
 
+            // 2 = Never show in
+            if ($geolocation_option == 2 && in_array($country_code, $geolocation_countries)) {
+                unset($operaters_id[$index]);
+            }
         }
 
         return $operaters_id;
     }
-
 }
